@@ -79,89 +79,40 @@ public class FunctionLibrary {
 	    	System.out.println("Error Message: "+alrt.getText());
 	    }
 	}
-
-	@When("i select and enter date")
-	public void i_select_and_enter_date(String string) {
-		String year = driver.findElement(By.className("ui-datepicker-year")).getText();
-		String month = driver.findElement(By.className("ui-datepicker-month")).getText();
-
-		while (!year.equalsIgnoreCase("2026")) {
-			driver.findElement(By.xpath("//span[contains(@class,'ui-icon-circle-triangle-e')]")).click();
-			year = driver.findElement(By.className("ui-datepicker-year")).getText();
-		}
-		while (!month.equalsIgnoreCase("February")) {
-			driver.findElement(By.xpath("//span[contains(@class,'ui-icon-circle-triangle-e')]")).click();
-			month = driver.findElement(By.className("ui-datepicker-month")).getText();
-		}
-		WebElement table = driver.findElement(By.className("ui-datepicker-calendar"));
-		WebElement tableBody = table.findElement(By.tagName("tbody"));
-		List<WebElement> trows = tableBody.findElements(By.tagName("tr"));
-		for (int i = 0; i < trows.size(); i++) {
-			List<WebElement> tcols = trows.get(i).findElements(By.tagName("td"));
-			for (int j = 0; j < tcols.size(); j++) {
-				String date = tcols.get(j).getText();
-				if (date.equalsIgnoreCase("15")) {
-					tcols.get(j).click();
-					break;
-				}
-			}
-		}
+	
+	@When("I select flight date as {string}")
+	public void i_select_flight_date_as(String string) {
+		
 	}
-
-	@Given("the user selects {string} as from city")
-	public void the_user_selects_as_from_city(String string) {
-		Select fFrom = new Select(driver.findElement(By.xpath("//select[contains(@class,'sf2')]")));
-		fFrom.selectByVisibleText("Hyderabad");
+	
+	@When("I select flight from {string}")
+	public void i_select_flight_from(String string) {
+	    
 	}
-
-	@Given("the user selects {string} as to city")
-	public void the_user_selects_as_to_city(String string) {
-		Select fTo = new Select(driver.findElement(By.xpath("//select[contains(@class,'sf3')]")));
-		fTo.selectByVisibleText("Kolkatha");
+	
+	@When("I select flight to {string}")
+	public void i_select_flight_to(String string) {
+	    
 	}
-
-	@When("i click search flight")
+	
+	@When("I click Search Flight")
 	public void i_click_search_flight() {
-		driver.findElement(By.xpath("//button[contains(@class,'btn-search')]")).click();
+	    
+	}
+	
+	@Then("I Should see flight table")
+	public void i_should_see_flight_table() {
+	   
+	}
+	
+	@When("I select airline name as {string}")
+	public void i_select_airline_name_as(String string) {
+	    
+	}
+	
+	@Then("I take screen shot")
+	public void i_take_screen_shot() {
+	    
 	}
 
-	@Then("list of available flights should be displayed")
-	public void list_of_available_flights_should_be_displayed() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions
-				.visibilityOfElementLocated(By.xpath("//*[@id=\"flights-results\"]/div/div/div[2]"))); 
-	}
-
-	@When("i click on selected flight")
-	public void i_click_on_selected_flight() {
-		boolean airlineFound = false;
-		try {
-			WebElement flightSearch = driver.findElement(By.className("flights_table"));
-			WebElement tb = flightSearch.findElement(By.tagName("tbody"));
-
-			List<WebElement> trList = tb.findElements(By.tagName("tr"));
-
-			for (WebElement row : trList) {
-				List<WebElement> td = row.findElements(By.tagName("td"));
-
-				if (td.size() > 1) {
-					String airlineName = td.get(0).getText();
-					if (airlineName.equalsIgnoreCase("Nagendra Airlines")) {
-						System.out.println("Selecting airline: " + airlineName);
-						WebElement selectButton = td.get(td.size() - 1)
-								.findElement(By.xpath(".//*[contains(text(), 'Select')]"));
-						selectButton.click();
-
-						System.out.println("Clicked 'Select' button for: " + airlineName);
-						airlineFound = true;
-						break; // Stop loop after clicking the button for "Soft Airlines"
-					}
-				}
-			}
-		} catch (Exception e) {
-			if (!airlineFound) {
-//				System.out.println("Soft Airlines not found in the table.");
-			}
-		}
-	}
 }
