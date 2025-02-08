@@ -1,0 +1,18 @@
+add dependencies
+selenium java
+junit 
+cucumber junit
+cucumber java
+cucumber testNG
+
+work with following----
+1. Login Test case is created with positive and negetive inputs
+2. SearchAndSelectFlight with valid inputs
+3. BookFlights
+4. Print orders on console output
+
+SearchAndSelectFlight with valid inputs
+select date 
+select from
+select to
+search flight
