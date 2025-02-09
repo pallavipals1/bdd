@@ -7,6 +7,6 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "feautureFiles/SearchAndSelectFlight.feature", glue = "StepDefination", 
-dryRun = true)
+dryRun = false)
 public class SearchAndSelectFlightTestCase {
 }

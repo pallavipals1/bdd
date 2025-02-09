@@ -1,10 +1,13 @@
 package StepDefination;
 
+import java.io.File;
 import java.sql.Driver;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -68,7 +71,7 @@ public class FunctionLibrary {
 		  System.out.println(login.getText());
 		  }
 	}
-	@And("i close the browser")
+	@When("i close the browser")
 	public void i_close_the_browser() {
 	    driver.close();
 	}
@@ -81,38 +84,97 @@ public class FunctionLibrary {
 	}
 	
 	@When("I select flight date as {string}")
-	public void i_select_flight_date_as(String string) {
-		
+	public void i_select_flight_date_as(String flightDate) {
+		driver.findElement(By.id("search-date")).sendKeys(flightDate);
 	}
 	
 	@When("I select flight from {string}")
-	public void i_select_flight_from(String string) {
-	    
+	public void i_select_flight_from(String flightFrom) {
+	    Select flightF = new Select(driver.findElement(By.xpath("//select[contains(@class,'sf2')]")));
+	    flightF.selectByVisibleText(flightFrom);
 	}
 	
 	@When("I select flight to {string}")
-	public void i_select_flight_to(String string) {
-	    
+	public void i_select_flight_to(String flightTo) {
+	    Select flightT = new Select(driver.findElement(By.xpath("//select[contains(@class,'sf3')]")));
+	    flightT.selectByVisibleText(flightTo);
 	}
 	
 	@When("I click Search Flight")
 	public void i_click_search_flight() {
-	    
+	    driver.findElement(By.xpath("//button[contains(@class,'btn-search')]")).click();
 	}
 	
 	@Then("I Should see flight table")
 	public void i_should_see_flight_table() {
-	   
+	  WebElement flightTable = driver.findElement(By.xpath("//div[@class='modal-content']"));
+	  WebDriverWait wait = new WebDriverWait(driver, 10);
+	    wait.until(ExpectedConditions.visibilityOf(flightTable));
+	    if(flightTable.isDisplayed()) {
+	    	System.out.println("flight table");
+	    }
 	}
 	
 	@When("I select airline name as {string}")
-	public void i_select_airline_name_as(String string) {
-	    
+	public void i_select_airline_name_as(String airline) {
+		boolean airlineFound = false;
+		try {
+			 WebElement flightTable = driver.findElement(By.xpath("//div[@class='modal-content']"));
+			 WebDriverWait wait = new WebDriverWait(driver, 10);
+			    wait.until(ExpectedConditions.visibilityOf(flightTable));
+			WebElement flightSearch = driver.findElement(By.className("flights_table"));
+			WebElement tb = flightSearch.findElement(By.tagName("tbody"));
+
+			List<WebElement> trList = tb.findElements(By.tagName("tr"));
+
+			for (WebElement row : trList) {
+				List<WebElement> td = row.findElements(By.tagName("td"));
+
+				if (td.size() > 1) {
+					String airlineName = td.get(0).getText();
+					if (airlineName.equalsIgnoreCase(airline)) {
+						System.out.println("Selecting airline: " + airlineName);
+						WebElement selectButton = td.get(td.size() - 1)
+								.findElement(By.xpath(".//*[contains(text(), 'Select')]"));
+						selectButton.click();
+
+						System.out.println("Clicked 'Select' button for: " + airlineName);
+						airlineFound = true;
+						break; // Stop loop after clicking the button for "Soft Airlines"
+					}
+				}
+			}
+		} catch (Exception e) {
+			if (!airlineFound) {
+//				System.out.println("Soft Airlines not found in the table.");
+			}
+		}
 	}
 	
 	@Then("I take screen shot")
 	public void i_take_screen_shot() {
-	    
+		TakesScreenshot ts = (TakesScreenshot)driver;
+		File src = ts.getScreenshotAs(OutputType.FILE);
+		File trg = new File("screenshot/flightBooking.png");
+		FileUtils.copyFile(src, trg);
 	}
+	
+	@When("i enter the name as {string}")
+	public void i_enter_the_name_as(String Name) {
+		driver.findElement(By.id("name")).sendKeys(Name);
+	}
+	
+	@When("i select class")
+	public void i_select_class() {
+		driver.findElement(By.cssSelector("input[type='radio'][value='Business']")).click();
+	}
+
+	@When("i click insert order")
+	public void i_click_insert_order() {
+		driver.findElement(By.xpath("//button[contains(@class,'insert-order active')]")).click();
+		
+	}
+
+
 
 }
